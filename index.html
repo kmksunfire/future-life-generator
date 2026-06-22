@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Future Life Generator — See Your Future. Then Build It.</title>
+  <meta name="description" content="Answer 12 questions. AI designs your future and sends you four cinematic images, your personal story, and a complete plan to build it." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:       #1a5c6e;
+      --teal-dark:  #0f3d4a;
+      --teal-light: #2a7a8f;
+      --gold:       #c88b2a;
+      --gold-light: #e0a84a;
+      --cream:      #faf7f2;
+      --warm-white: #fffef9;
+      --slate:      #4a5a62;
+      --text:       #1a1a1a;
+      --radius:     12px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--warm-white);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 18px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10, 30, 36, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: #fff;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+    }
+    .nav-cta {
+      background: var(--gold);
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      background:
+        linear-gradient(to bottom, rgba(10,30,36,0.72) 0%, rgba(10,30,36,0.55) 60%, rgba(10,30,36,0.80) 100%),
+        url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1800&q=80') center/cover no-repeat;
+    }
+    .hero-inner { max-width: 780px; margin: 0 auto; }
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.18;
+      margin-bottom: 24px;
+    }
+    .hero p {
+      font-size: clamp(1rem, 2.2vw, 1.25rem);
+      color: rgba(255,255,255,0.85);
+      max-width: 580px;
+      margin: 0 auto 40px;
+      font-weight: 300;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: var(--gold);
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 600;
+      padding: 18px 44px;
+      border-radius: 50px;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 24px rgba(200,139,42,0.35);
+    }
+    .btn-primary:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(200,139,42,0.45);
+    }
+    .hero-micro {
+      display: block;
+      margin-top: 16px;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.03em;
+    }
+
+    /* ── PROOF STRIP ── */
+    .proof-strip {
+      background: var(--teal-dark);
+      padding: 28px 40px;
+      text-align: center;
+    }
+    .proof-strip p {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.7);
+      font-style: italic;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .proof-strip strong { color: var(--gold-light); font-style: normal; }
+
+    /* ── SECTION BASE ── */
+    section { padding: 96px 24px; }
+    .section-inner { max-width: 1040px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.9rem, 4vw, 2.8rem);
+      font-weight: 700;
+      color: var(--teal-dark);
+      line-height: 1.22;
+      margin-bottom: 20px;
+    }
+    .section-sub {
+      font-size: 1.05rem;
+      color: var(--slate);
+      max-width: 580px;
+      font-weight: 300;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how { background: var(--cream); }
+    .how .section-inner { text-align: center; }
+    .how .section-sub { margin: 0 auto 64px; }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 40px;
+      text-align: left;
+    }
+    .step {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      border-top: 3px solid var(--gold);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+    }
+    .step-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: var(--gold);
+      opacity: 0.35;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .step h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--teal-dark);
+      margin-bottom: 10px;
+    }
+    .step p { font-size: 0.95rem; color: var(--slate); }
+
+    /* ── WHAT YOU GET ── */
+    .what-you-get { background: var(--warm-white); }
+    .outputs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+      margin-top: 56px;
+    }
+    .output-card {
+      background: var(--cream);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .output-card:hover {
+      box-shadow: 0 6px 28px rgba(0,0,0,0.09);
+      transform: translateY(-2px);
+    }
+    .output-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--teal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.2rem;
+    }
+    .output-text h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--teal-dark);
+      margin-bottom: 6px;
+    }
+    .output-text p { font-size: 0.9rem; color: var(--slate); line-height: 1.6; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials {
+      background: var(--teal-dark);
+      padding: 96px 24px;
+    }
+    .testimonials .section-title { color: #fff; text-align: center; }
+    .testimonials .section-label { text-align: center; }
+    .quotes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+      margin-top: 56px;
+    }
+    .quote-card {
+      background: rgba(255,255,255,0.07);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      border-left: 3px solid var(--gold);
+    }
+    .quote-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: rgba(255,255,255,0.9);
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+    .quote-author {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--gold-light);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ── SECOND CTA ── */
+    .cta-bottom {
+      background:
+        linear-gradient(to bottom, rgba(10,30,36,0.80) 0%, rgba(10,30,36,0.70) 100%),
+        url('https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=1400&q=80') center/cover no-repeat;
+      padding: 120px 24px;
+      text-align: center;
+    }
+    .cta-bottom .section-label { text-align: center; }
+    .cta-bottom .section-title { color: #fff; text-align: center; max-width: 700px; margin: 0 auto 20px; }
+    .cta-bottom p { color: rgba(255,255,255,0.7); font-size: 1rem; margin-bottom: 40px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #07191f;
+      padding: 40px 24px;
+      text-align: center;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 12px;
+    }
+    footer p {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.35);
+    }
+    footer a { color: rgba(255,255,255,0.45); text-decoration: none; }
+    footer a:hover { color: var(--gold-light); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav { padding: 16px 20px; }
+      .hero { padding: 100px 20px 60px; }
+      .proof-strip { padding: 24px 20px; }
+      section { padding: 72px 20px; }
+      .steps, .outputs, .quotes { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#">Future Life Generator</a>
+    <a class="nav-cta" href="https://docs.google.com/forms/d/e/1FAIpQLScvgVigI3A0JFruHCPPAyJThT0Vdk1VhgbG2sHx9bla0oiHZA/viewform" target="_blank">Generate My Future →</a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <span class="hero-eyebrow">Flow to the Future</span>
+      <h1>What does your life look like in 2040?</h1>
+      <p>Answer 12 questions. AI designs your future — then shows it to you. Four cinematic images. Your story. A real plan to get there.</p>
+      <a class="btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLScvgVigI3A0JFruHCPPAyJThT0Vdk1VhgbG2sHx9bla0oiHZA/viewform" target="_blank">Generate My Future &nbsp;→</a>
+      <span class="hero-micro">Free &nbsp;·&nbsp; Takes 5 minutes &nbsp;·&nbsp; No account needed</span>
+    </div>
+  </section>
+
+  <!-- PROOF STRIP -->
+  <div class="proof-strip">
+    <p>
+      <strong>"It made me cry. I actually saw my life."</strong> — Sarah M. &nbsp;&nbsp;|&nbsp;&nbsp;
+      <strong>"I forwarded it to my husband and we talked for two hours."</strong> — Marcus T. &nbsp;&nbsp;|&nbsp;&nbsp;
+      <strong>"This is what vision boards were always trying to be."</strong> — Jenna R.
+    </p>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <div class="section-inner">
+      <div class="section-label">The Process</div>
+      <h2 class="section-title">Your personalized future<br>in three steps.</h2>
+      <p class="section-sub">Simple questions. Cinematic results. A real plan.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h3>Tell us about yourself.</h3>
+          <p>Answer 12 questions about where you want to live, how you want to feel, and what matters most to you.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h3>AI builds your future.</h3>
+          <p>We generate your personal archetype, a cinematic story of your life, and four images of your future world.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h3>Receive your package.</h3>
+          <p>4 cinematic images, your future story, a 90-day checklist, a 1-year roadmap, and a 5-year vision path — delivered to your inbox within 48 hours.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT YOU GET -->
+  <section class="what-you-get">
+    <div class="section-inner">
+      <div class="section-label">What's Included</div>
+      <h2 class="section-title">Your Future Life Package.</h2>
+      <p class="section-sub">Everything you need to see it clearly — and start building it.</p>
+      <div class="outputs">
+        <div class="output-card">
+          <div class="output-icon">🌄</div>
+          <div class="output-text">
+            <h3>4 Cinematic Future Images</h3>
+            <p>Your future community, daily life, adventures, and contribution — rendered in stunning detail.</p>
+          </div>
+        </div>
+        <div class="output-card">
+          <div class="output-icon">✦</div>
+          <div class="output-text">
+            <h3>Your Future Archetype</h3>
+            <p>A name and description for the person you're becoming. Your identity, crystallized.</p>
+          </div>
+        </div>
+        <div class="output-card">
+          <div class="output-icon">📖</div>
+          <div class="output-text">
+            <h3>Your Future Story</h3>
+            <p>Your life, 15 years from now — written in vivid, cinematic, personal detail.</p>
+          </div>
+        </div>
+        <div class="output-card">
+          <div class="output-icon">✅</div>
+          <div class="output-text">
+            <h3>90-Day Action Checklist</h3>
+            <p>The first real steps you can take starting right now, organized by month.</p>
+          </div>
+        </div>
+        <div class="output-card">
+          <div class="output-icon">🗺</div>
+          <div class="output-text">
+            <h3>1-Year Roadmap</h3>
+            <p>Month-by-month milestones that move you from here to there.</p>
+          </div>
+        </div>
+        <div class="output-card">
+          <div class="output-icon">🔭</div>
+          <div class="output-text">
+            <h3>5-Year Vision Path</h3>
+            <p>The bigger arc — who you are and what you've built by 2031.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials">
+    <div class="section-inner">
+      <div class="section-label">What People Are Saying</div>
+      <h2 class="section-title">It lands differently<br>when you can actually see it.</h2>
+      <div class="quotes">
+        <div class="quote-card">
+          <p class="quote-text">"It made me cry. I actually saw my life. The house, the community, the work I was doing. It felt real."</p>
+          <div class="quote-author">— Sarah M.</div>
+        </div>
+        <div class="quote-card">
+          <p class="quote-text">"I forwarded it to my husband and we talked for two hours. We've never had a conversation like that before."</p>
+          <div class="quote-author">— Marcus T.</div>
+        </div>
+        <div class="quote-card">
+          <p class="quote-text">"This is what vision boards were always trying to be. But this one actually looks like me."</p>
+          <div class="quote-author">— Jenna R.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECOND CTA -->
+  <section class="cta-bottom">
+    <div class="section-inner">
+      <div class="section-label">Ready?</div>
+      <h2 class="section-title">Your future is waiting.<br>Let's see it.</h2>
+      <p>Free to start. Delivery within 48 hours. No account needed.</p>
+      <a class="btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLScvgVigI3A0JFruHCPPAyJThT0Vdk1VhgbG2sHx9bla0oiHZA/viewform" target="_blank">Generate My Future &nbsp;→</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Future Life Generator</div>
+    <p>© 2026 Future Life Generator &nbsp;·&nbsp; <a href="mailto:hello@futurelifegenerator.com">hello@futurelifegenerator.com</a> &nbsp;·&nbsp; <a href="#">Privacy</a></p>
+  </footer>
+
+</body>
+</html>

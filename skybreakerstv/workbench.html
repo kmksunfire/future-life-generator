@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sky Breakers Inventor's Workbench</title>
+<meta name="description" content="Design your own Sky Breakers flying machine. Pick a body and a pilot, snap on wings, propellers and wheels, paint it, then take it for a test flight off the cliff.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Sister page of the Flight Lab and Trail Run: same parchment look. Build on the left, choices on the right, hangar below. */
+:root {
+  --bg: #eadcbd; --card: #f6ecd6; --card2: #f1e4c7; --ink: #43291a; --muted: #6e5238;
+  --rule: #cdb58a; --teal: #1d7591; --brass: #a97a26; --red: #8f3420; --keep: #3c7d3a;
+  --display: "IM Fell English SC", "Palatino Linotype", Georgia, serif;
+  --serif: "IM Fell English", "Palatino Linotype", Georgia, serif;
+  --body: "Atkinson Hyperlegible", Verdana, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body { color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.5; background-color: var(--bg);
+  background-image: radial-gradient(ellipse at 50% 30%, rgba(255,250,235,.55), rgba(120,80,30,.18) 100%); background-attachment: fixed;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 14px 40px; }
+.wrap { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+.box { background: var(--card); border: 1px solid var(--rule); border-radius: 4px; box-shadow: 0 6px 18px rgba(80,50,20,.12); }
+.crumbs { display: flex; gap: 14px; flex-wrap: wrap; font-weight: 700; font-size: 14px; }
+.crumbs a { color: var(--teal); text-decoration: none; }
+.crumbs a:hover { text-decoration: underline; }
+h1 { font-family: var(--display); font-weight: 400; color: var(--red); font-size: clamp(32px, 4.4vw, 48px); line-height: 1; margin: 4px 0 0; }
+.brandrow { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.brandlogo { height: clamp(54px, 9vw, 86px); width: auto; filter: drop-shadow(0 3px 6px rgba(60,40,15,.35)); }
+.hint { font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--muted); margin: 2px 0 0; }
+.bench { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 14px; align-items: start; }
+@media (max-width: 900px) { .bench { grid-template-columns: 1fr; } }
+.stagecol { display: flex; flex-direction: column; gap: 10px; min-width: 0; position: sticky; top: 10px; }
+@media (max-width: 900px) {
+  .stagecol { position: sticky; top: 0; z-index: 6; background: var(--bg); padding: 6px 0 8px; margin-inline: -4px; box-shadow: 0 10px 14px -10px rgba(60,40,15,.35); }
+  .stagecol .stage { aspect-ratio: auto; height: min(40vh, 74vw); }
+  .stagecol .actions { flex-wrap: nowrap; overflow-x: auto; gap: 6px; scrollbar-width: none; }
+  .stagecol .actions .btn { flex: none; font-size: 14px; padding: 8px 12px; }
+  .stagecol .actions .btn.go { font-size: 15px; padding: 9px 16px; }
+}
+.stage { aspect-ratio: 4 / 3; max-width: 100%; position: relative; overflow: hidden; border-radius: 6px; border: 1px solid var(--rule);
+  background: radial-gradient(ellipse at 50% 40%, #fbf3e0 0%, #efe1c1 60%, #dcc597 100%); box-shadow: 0 8px 24px rgba(60,40,15,.2); touch-action: none; }
+.stage.sky { background: linear-gradient(#8fc3dc 0%, #c9e2ec 55%, #f1e3bf 100%); }
+.stage canvas { display: block; width: 100%; height: 100%; }
+.tag { position: absolute; left: 14px; top: 10px; font-family: var(--display); font-size: 24px; color: var(--red); line-height: 1.05; max-width: 70%; pointer-events: none; }
+.tag small { display: block; font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--muted); }
+.flymsg { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); font-family: var(--display); font-size: clamp(22px, 3.6vw, 34px); color: #fff8e8; text-shadow: 0 2px 0 var(--red), 0 0 12px rgba(70,30,10,.5); white-space: nowrap; pointer-events: none; }
+.result { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 14px; background: rgba(234,220,189,.45); }
+.result > div { background: var(--card); border: 1px solid var(--rule); border-radius: 8px; padding: 16px 20px; width: min(440px, 100%); box-shadow: 0 12px 34px rgba(60,40,15,.3); display: flex; flex-direction: column; gap: 8px; }
+.result h2 { font-family: var(--display); font-weight: 400; font-size: 32px; margin: 0; color: var(--red); line-height: 1; }
+.result p { margin: 0; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn { font: 700 16px var(--body); border-radius: 999px; padding: 10px 18px; cursor: pointer; border: 1px solid var(--rule); background: var(--card2); color: var(--ink); }
+.btn.go { background: var(--red); color: #fff; border-color: var(--red); font-size: 18px; padding: 12px 24px; }
+.btn.teal { background: var(--teal); color: #fff; border-color: var(--teal); }
+.btn:disabled { opacity: .5; cursor: default; }
+a.btn { text-decoration: none; display: inline-block; }
+button:focus-visible, input:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; }
+.panel { padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.step h3 { font-family: var(--display); font-weight: 400; font-size: 21px; margin: 0 0 6px; line-height: 1.1; }
+.step h3 b { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--red); color: #fff; font: 700 14px var(--body); margin-right: 6px; vertical-align: 2px; }
+.row { display: flex; flex-wrap: wrap; gap: 6px; }
+.slot { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 8px; align-items: center; margin-top: 6px; }
+.slot > span { font-weight: 700; font-size: 14px; color: var(--muted); }
+.chip { font: 700 14px var(--body); border-radius: 999px; padding: 7px 13px; border: 1px solid var(--rule); background: var(--card2); color: var(--ink); cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--teal); border-color: var(--teal); color: #fff; }
+.sw { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--card); box-shadow: 0 0 0 1px var(--rule); cursor: pointer; padding: 0; }
+.sw[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--ink); }
+.name { width: 100%; font: 700 17px var(--body); padding: 10px 14px; border-radius: 999px; border: 1px solid var(--rule); background: #fffaf0; color: var(--ink); }
+.stats { display: grid; grid-template-columns: auto 1fr auto; gap: 5px 10px; align-items: center; font-size: 14px; font-weight: 700; }
+.bar { height: 10px; border-radius: 6px; background: #e3d2ad; overflow: hidden; }
+.bar i { display: block; height: 100%; border-radius: 6px; transition: width .25s; }
+.stats .n { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; }
+.predict { font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--muted); margin: 0; }
+.hangar { padding: 16px 18px; display: flex; flex-direction: column; gap: 10px; }
+.hangar h2 { font-family: var(--display); font-weight: 400; font-size: 28px; margin: 0; }
+.hlist { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+.hcard { border: 1px solid var(--rule); border-radius: 8px; background: var(--card2); padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.hcard b { font-family: var(--display); font-weight: 400; font-size: 20px; line-height: 1.1; overflow-wrap: anywhere; }
+.hcard span { font-size: 13px; color: var(--muted); }
+.hcard .row button { font: 700 13px var(--body); padding: 5px 10px; border-radius: 999px; border: 1px solid var(--rule); background: var(--card); color: var(--ink); cursor: pointer; }
+.empty { color: var(--muted); margin: 0; }
+.fine { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--muted); margin: 0; text-align: center; }
+.mkelink { margin-left: auto; opacity: .85; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <nav class="crumbs" aria-label="Back"><a href="flight-lab.html">← Flight Lab</a><a href="trail-run.html">Trail Run</a><a href="index.html">Sky Breakers home</a><a class="mkelink" href="https://www.mkecreatives.com">MKE Creatives ↗</a></nav>
+    <div class="brandrow"><a href="index.html" title="Back to Sky Breakers home"><img class="brandlogo" src="media/logo.png" alt="Sky Breakers home"></a><h1>Inventor's Workbench</h1></div>
+    <p class="hint">Build your own flying machine, then see if it flies. Every great inventor flops first.</p>
+  </header>
+
+  <section class="bench">
+    <div class="stagecol">
+      <div class="stage" id="stage">
+        <div class="tag" id="tag"></div>
+        <div class="flymsg" id="flymsg" hidden></div>
+        <div class="result" id="result" hidden>
+          <div>
+            <h2 id="rTitle"></h2>
+            <p id="rDist" style="font-weight:700"></p>
+            <p id="rTip"></p>
+            <div class="actions"><button class="btn go" type="button" id="again">Fly again</button><button class="btn" type="button" id="back">Back to the bench</button></div>
+            <div class="actions"><a class="btn teal" href="trail-run.html?ride=custom&amp;course=trail">Race it on the trail</a><a class="btn teal" href="trail-run.html?ride=custom&amp;course=canyon">Race it in the canyon</a></div>
+          </div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn go" type="button" id="fly">Test flight!</button>
+        <button class="btn teal" type="button" id="save">Save to my hangar</button>
+        <button class="btn" type="button" id="card">Patent card</button>
+        <button class="btn" type="button" id="rand">Surprise me</button>
+        <a class="btn" href="trail-run.html?ride=custom">Race it in Trail Run</a>
+      </div>
+    </div>
+
+    <div class="panel box" id="panel">
+      <div class="step"><h3><b>1</b>Pick a body</h3><div class="row" id="bodies"></div></div>
+      <div class="step"><h3><b>2</b>Pick a pilot</h3><div class="row" id="pilots"></div></div>
+      <div class="step"><h3><b>3</b>Snap on parts</h3><div id="parts"></div></div>
+      <div class="step"><h3><b>4</b>Paint it</h3>
+        <div class="slot"><span>Main</span><div class="row" id="mainCol"></div></div>
+        <div class="slot"><span>Trim</span><div class="row" id="accCol"></div></div>
+      </div>
+      <div class="step"><h3><b>5</b>Name it</h3><input class="name" id="name" maxlength="24" placeholder="The Sky Sparrow" autocomplete="off" aria-label="Machine name"></div>
+      <div class="step"><h3>How will it fly?</h3>
+        <div class="stats" id="stats"></div>
+        <p class="predict" id="predict"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="hangar box">
+    <h2>My hangar</h2>
+    <div class="hlist" id="hangar"></div>
+    <p class="fine">Machines are saved on this device only.</p>
+  </section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="machines.js"></script>
+<script>
+(function () {
+'use strict';
+const $ = id => document.getElementById(id);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const { COLORS, BODIES, PILOTS, PARTS, DEFAULT, statsOf, buildMachine, pm, M, B, Cy, solid, at, line, gear } = window.SBMachines;
+let S = Object.assign({}, DEFAULT);
+
+const PREDICT = { soar: 'Looks like a sky-breaker! It should climb and loop.', float: 'It should float up and drift a long way.', glide: 'It should glide nicely off the cliff.', hop: 'It might hop off the edge and land quick.',
+  roll: 'It will roll, but it is too heavy to fly. More lift needed!', flop: 'Uh oh. It might drop like a rock. Try adding wings, a rotor or a kite.' };
+const TIPS = { soar: 'Legendary! The whole crew is cheering.', float: 'Up, up and away. Pip wants a turn next.', glide: 'Smooth! Add a spiral rotor or a kite to climb even higher.', hop: 'Almost! Lighter parts or bigger wings will help.',
+  roll: 'Great rolling. Now bolt on some wings or a kite to get it into the air.', flop: 'Back to the drawing board! Every inventor flops first. Try wings, a kite or a spiral rotor.' };
+const TITLES = { soar: 'It soars!', float: 'It floats!', glide: 'It glides!', hop: 'A little hop!', roll: 'It rolls!', flop: 'Flop!' };
+
+// ================= scene =================
+const stage = $('stage');
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+stage.insertBefore(renderer.domElement, stage.firstChild);
+const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(38, 4 / 3, 0.1, 400);
+scene.add(new THREE.HemisphereLight(0xfff4dc, 0x8a6a40, 0.85));
+const sun = new THREE.DirectionalLight(0xffe7bf, 0.75); sun.position.set(4, 9, 6); sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
+Object.assign(sun.shadow.camera, { left: -8, right: 8, top: 8, bottom: -8, near: 0.5, far: 40 }); scene.add(sun, sun.target);
+const controls = new THREE.OrbitControls(camera, renderer.domElement); controls.enableDamping = true; controls.enablePan = false; controls.minDistance = 3; controls.maxDistance = 16; controls.maxPolarAngle = Math.PI * 0.49;
+controls.autoRotate = !reduced; controls.autoRotateSpeed = 1.2;
+// bench: a round oak table top
+const benchG = new THREE.Group(); scene.add(benchG);
+const top = solid(Cy(3.6, 3.6, 0.2, 40), M.wood); top.position.y = -0.1; benchG.add(top);
+const ringT = solid(new THREE.TorusGeometry(3.6, 0.06, 6, 50).rotateX(Math.PI / 2), M.brass); benchG.add(ringT);
+// flight course: cliff, slope, meadow, mountains, distance flags
+const course = new THREE.Group(); course.visible = false; scene.add(course);
+const gh = x => x < -4 ? 3 : x < -1 ? 3 * (-1 - x) / 3 : 0;
+(function () {
+  const meadow = solid(B(400, 0.2, 260), M.grass); meadow.position.set(60, -0.1, -100); course.add(meadow);
+  const cliff = solid(B(14, 3, 10), M.stone); cliff.position.set(-11, 1.5, 0); course.add(cliff);
+  const slopeL = Math.hypot(3, 3), slope = solid(B(slopeL, 0.3, 10), M.stoneDark); slope.position.set(-2.5, 1.5 - 0.1, 0); slope.rotation.z = -Math.PI / 4; course.add(slope);
+  const fill = new THREE.Shape(); fill.moveTo(-4, 0); fill.lineTo(-4, 3); fill.lineTo(-1, 0); fill.lineTo(-4, 0);
+  const fg = new THREE.ExtrudeGeometry(fill, { depth: 9.8, bevelEnabled: false }); fg.translate(0, 0, -4.9); course.add(solid(fg, M.stone));
+  for (let i = 0; i < 9; i++) { const h = 22 + (i % 3) * 8, r = 26 + (i % 2) * 6; const c = solid(new THREE.ConeGeometry(r, h, 6).translate(0, h / 2, 0), i % 2 ? M.stone : M.stoneDark); c.position.set(-40 + i * 22, 0, -95 - (i % 2) * 15); course.add(c);
+    const s = solid(new THREE.ConeGeometry(r * 0.3, h * 0.3, 6).translate(0, h * 0.85, 0), M.snow); s.position.copy(c.position); course.add(s); }
+  for (let i = 0; i < 26; i++) { const t = new THREE.Group(); t.add(solid(new THREE.ConeGeometry(0.6, 1.8, 7).translate(0, 1.4, 0), M.pine)); t.add(solid(Cy(0.1, 0.12, 0.6, 6).translate(0, 0.3, 0), M.woodDark));
+    t.position.set(2 + i * 3.1 + (i % 3), 0, -7 - (i % 4) * 1.7); course.add(t); }
+  const fc = document.createElement('canvas'); fc.width = 128; fc.height = 64;
+  for (let d = 5; d <= 60; d += 5) { const x = -4 + d; const pole = solid(Cy(0.05, 0.05, 1.6, 6), M.woodDark); pole.position.set(x, 0.8, 3); course.add(pole);
+    const c = document.createElement('canvas'); c.width = 128; c.height = 64; const g = c.getContext('2d'); g.fillStyle = '#f3e6c8'; g.fillRect(0, 0, 128, 64); g.fillStyle = '#8f3420'; g.font = 'bold 40px Georgia'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(d + 'm', 64, 34);
+    const fl = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.45), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), side: THREE.DoubleSide })); fl.position.set(x + 0.45, 1.4, 3); course.add(fl); }
+})();
+
+let machine = null;
+function rebuild() {
+  if (machine) scene.remove(machine);
+  machine = buildMachine(S); scene.add(machine);
+  const h = machine.userData.height; controls.target.set(0, h * 0.45, 0);
+  if (mode === 'build') { const d = 5.5 + h * 1.25; if (!camera.userData.placed) { camera.position.set(d * 0.75, d * 0.35 + h * 0.45, d * 0.8); camera.userData.placed = true; } }
+  $('tag').innerHTML = ''; const n = document.createElement('span'); n.textContent = S.name || 'Unnamed invention'; const sm = document.createElement('small'); sm.textContent = `${BODIES[S.body].label} · pilot ${PILOTS[S.pilot].label}`; $('tag').append(n, sm);
+  renderStats();
+}
+
+// ================= UI =================
+function chips(el, entries, cur, onPick) { el.innerHTML = ''; entries.forEach(([k, label]) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = label; b.setAttribute('aria-pressed', k === cur); b.addEventListener('click', () => onPick(k)); el.appendChild(b); }); }
+function swatches(el, cur, onPick) { el.innerHTML = ''; Object.entries(COLORS).forEach(([k, hex]) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'sw'; b.style.background = hex; b.setAttribute('aria-label', k); b.setAttribute('aria-pressed', k === cur); b.addEventListener('click', () => onPick(k)); el.appendChild(b); }); }
+function renderUI() {
+  chips($('bodies'), Object.entries(BODIES).map(([k, v]) => [k, v.label]), S.body, k => set({ body: k }));
+  chips($('pilots'), Object.entries(PILOTS).map(([k, v]) => [k, v.label]), S.pilot, k => set({ pilot: k }));
+  const parts = $('parts'); parts.innerHTML = '';
+  Object.entries(PARTS).forEach(([slot, def]) => { const row = document.createElement('div'); row.className = 'slot'; const lab = document.createElement('span'); lab.textContent = def.label; const c = document.createElement('div'); c.className = 'row';
+    chips(c, Object.entries(def.opts).map(([k, v]) => [k, v[0]]), S[slot], k => set({ [slot]: k })); row.append(lab, c); parts.appendChild(row); });
+  swatches($('mainCol'), S.main, k => set({ main: k })); swatches($('accCol'), S.accent, k => set({ accent: k }));
+  if ($('name').value !== S.name) $('name').value = S.name;
+}
+function remember() { try { localStorage.setItem('sky-breakers-workbench-current', JSON.stringify(S)); } catch (e) {} }
+function renderStats() { remember(); const t = statsOf(S), rows = [['Lift', t.lift, '#1d7591'], ['Speed', t.speed, '#a97a26'], ['Weight', t.weight, '#8f3420'], ['Fun', t.fun, '#3c7d3a']];
+  $('stats').innerHTML = rows.map(([l, v, c]) => `<span>${l}</span><span class="bar" aria-hidden="true"><i style="width:${clamp(v / 12, 0, 1) * 100}%;background:${c}"></i></span><span class="n">${v}</span>`).join('');
+  $('predict').textContent = PREDICT[t.out]; }
+function set(patch) { if (patch.body && patch.body !== S.body) camera.userData.placed = false; Object.assign(S, patch); renderUI(); rebuild(); }
+$('name').addEventListener('input', e => { S.name = e.target.value.slice(0, 24); rebuild(); });
+$('rand').addEventListener('click', () => { const pick = o => { const k = Object.keys(o); return k[Math.floor(Math.random() * k.length)]; };
+  const r = { body: pick(BODIES), pilot: pick(PILOTS), main: pick(COLORS), accent: pick(COLORS), name: S.name };
+  Object.keys(PARTS).forEach(k => r[k] = pick(PARTS[k].opts)); if (r.wings === 'none' && Math.random() < 0.6) r.wings = 'canvas'; set(r); });
+
+// hangar (this device only)
+const HKEY = 'sky-breakers-workbench-hangar';
+function loadH() { try { return JSON.parse(localStorage.getItem(HKEY) || '[]'); } catch (e) { return []; } }
+function saveH(list) { try { localStorage.setItem(HKEY, JSON.stringify(list)); return true; } catch (e) { return false; } }
+function renderHangar() { const list = loadH(), el = $('hangar'); el.innerHTML = '';
+  if (!list.length) { const p = document.createElement('p'); p.className = 'empty'; p.textContent = 'Nothing in the hangar yet. Build something and save it!'; el.appendChild(p); return; }
+  list.forEach((m, i) => { const c = document.createElement('div'); c.className = 'hcard'; const b = document.createElement('b'); b.textContent = m.name || 'Unnamed invention';
+    const s = document.createElement('span'); s.textContent = `${BODIES[m.body] ? BODIES[m.body].label : ''} · ${PILOTS[m.pilot] ? PILOTS[m.pilot].label : ''} · ${TITLES[statsOf(m).out]}`;
+    const row = document.createElement('div'); row.className = 'row'; const load = document.createElement('button'); load.type = 'button'; load.textContent = 'Open'; load.addEventListener('click', () => { set(Object.assign({}, DEFAULT, m)); window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' }); });
+    const del = document.createElement('button'); del.type = 'button'; del.textContent = 'Remove'; del.addEventListener('click', () => { const l = loadH(); l.splice(i, 1); saveH(l); renderHangar(); });
+    row.append(load, del); c.append(b, s, row); el.appendChild(c); }); }
+$('save').addEventListener('click', () => { const l = loadH(); l.unshift(Object.assign({}, S)); if (l.length > 12) l.length = 12; const ok = saveH(l); renderHangar();
+  const b = $('save'); b.textContent = ok ? 'Saved!' : 'Could not save here'; setTimeout(() => b.textContent = 'Save to my hangar', 1500); });
+
+// patent card
+$('card').addEventListener('click', () => {
+  if (mode !== 'build') return; renderer.render(scene, camera);
+  const shot = renderer.domElement, c = document.createElement('canvas'); c.width = 1400; c.height = 900; const g = c.getContext('2d');
+  g.fillStyle = '#f3e6c8'; g.fillRect(0, 0, 1400, 900); g.strokeStyle = '#43291a'; g.lineWidth = 8; g.strokeRect(24, 24, 1352, 852); g.lineWidth = 2; g.strokeRect(40, 40, 1320, 820);
+  g.fillStyle = '#8f3420'; g.textAlign = 'center'; g.font = 'bold 30px Georgia'; g.fillText('SKY BREAKERS PATENT OFFICE', 700, 92);
+  let h = 0; for (const ch of JSON.stringify(S)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  g.fillStyle = '#43291a'; g.font = 'italic 22px Georgia'; g.fillText('Patent No. SB-' + String(h % 100000).padStart(5, '0'), 700, 128);
+  g.font = 'bold 56px Georgia'; g.fillText(S.name || 'Unnamed invention', 700, 196);
+  const iw = 760, ih = iw * shot.height / shot.width; g.fillStyle = '#efe1c1'; g.fillRect(70, 230, iw, ih); g.drawImage(shot, 70, 230, iw, ih); g.strokeRect(70, 230, iw, ih);
+  const t = statsOf(S); g.textAlign = 'left'; g.font = 'bold 26px Georgia'; g.fillText('Built from', 880, 270); g.font = '22px Georgia';
+  const lines = [`Body: ${BODIES[S.body].label}`, `Pilot: ${PILOTS[S.pilot].label}`].concat(Object.keys(PARTS).filter(k => S[k] !== 'none').map(k => `${PARTS[k].label}: ${PARTS[k].opts[S[k]][0]}`));
+  lines.forEach((l, i) => g.fillText(l, 880, 306 + i * 32));
+  const y0 = 330 + lines.length * 32; [['Lift', t.lift, '#1d7591'], ['Speed', t.speed, '#a97a26'], ['Weight', t.weight, '#8f3420'], ['Fun', t.fun, '#3c7d3a']].forEach(([l, v, col], i) => {
+    const y = y0 + i * 40; g.fillStyle = '#43291a'; g.fillText(l, 880, y + 16); g.fillStyle = '#e3d2ad'; g.fillRect(990, y, 300, 18); g.fillStyle = col; g.fillRect(990, y, 300 * clamp(v / 12, 0, 1), 18); });
+  g.fillStyle = '#43291a'; g.font = 'italic 24px Georgia'; g.fillText('Test flight: ' + TITLES[t.out], 880, y0 + 190);
+  g.textAlign = 'center'; g.font = 'italic 22px Georgia'; g.fillText('Invented at the Sky Breakers workshop · skybreakerstv.com', 700, 836);
+  const a = document.createElement('a'); a.download = (S.name || 'my-invention').replace(/[^a-z0-9]+/gi, '-').toLowerCase() + '-patent.png'; a.href = c.toDataURL('image/png'); document.body.appendChild(a); a.click(); a.remove();
+});
+
+// ================= test flight =================
+let mode = 'build', F = null, clock = 0;
+function startFlight() {
+  const t = statsOf(S); mode = 'fly'; controls.enabled = false; controls.autoRotate = false; benchG.visible = false; course.visible = true; stage.classList.add('sky');
+  $('result').hidden = true; ['fly', 'save', 'card', 'rand'].forEach(id => $(id).disabled = true);
+  const base = { soar: { vx: 7.5, lift: 1.12, maxY: 8, loop: true }, float: { vx: 2.6, lift: 1.06, maxY: 9 }, glide: { vx: 6.5, lift: 0.9, sink: -1.1 }, hop: { vx: 4.5, vy: 2.6, lift: 0.55 }, flop: { vx: 1.2, lift: 0, spin: true }, roll: { vx: 2, roll: true } }[t.out];
+  F = Object.assign({ out: t.out, x: -7, y: 3, vx: 0, vy: 0, phase: 'run', t: 0, pitch: 0, loopT: -1, spinA: 0, landed: false, bounce: 0 }, { p: base });
+  flash('3… 2… 1… Go!', 1200);
+}
+function flash(text, ms) { const m = $('flymsg'); m.textContent = text; m.hidden = false; clearTimeout(flash.t); flash.t = setTimeout(() => m.hidden = true, ms); }
+function stepFlight(dt) {
+  const p = F.p; F.t += dt;
+  if (F.phase === 'run') { F.vx = Math.min((p.vx || 3) * 0.8, F.vx + 4 * dt); F.x += F.vx * dt; F.y = gh(F.x); if (F.x >= -4) { F.phase = p.roll ? 'roll' : 'air'; F.vx = p.vx; F.vy = p.vy || (p.lift > 1 ? 1.5 : 0.3); } }
+  else if (F.phase === 'roll') { const sl = F.x < -1 ? 1 : 0; F.vx += (sl * 6 - 1.2) * dt; F.vx = Math.max(0, F.vx); F.x += F.vx * dt; F.y = gh(F.x); F.pitch = F.x < -1 ? -Math.PI / 4 * 0.9 : 0; if (F.vx <= 0.02 && F.x > -1) land(); }
+  else if (F.phase === 'air') {
+    let lift = p.lift; if (p.maxY && F.y >= p.maxY) lift = 1.0; if (F.out === 'soar' && F.x > 26) lift = 0.92; if (F.out === 'float' && F.x > 20) lift = 0.95;
+    F.vy += (lift - 1) * 9.8 * dt; if (p.sink) F.vy = Math.max(F.vy, p.sink); if (lift >= 1 && F.vy > 2) F.vy = 2; if (p.maxY && F.y >= p.maxY && F.vy > 0) F.vy *= 0.9;
+    if (p.loop && F.loopT < 0 && F.x > 8) F.loopT = 0;
+    if (F.loopT >= 0 && F.loopT < 1) { F.loopT += dt / 1.4; const a = F.loopT * Math.PI * 2; F.x += Math.cos(a) * p.vx * dt; F.y += Math.sin(a) * p.vx * dt; F.pitch = a; if (F.loopT >= 1) { F.pitch = 0; flash('Loop-the-loop!', 1000); } }
+    else { F.x += F.vx * dt; F.y += F.vy * dt; F.pitch = p.spin ? F.pitch - dt * 4 : Math.atan2(F.vy, F.vx) * 0.8; }
+    if (F.y <= gh(F.x) && F.t > 0.3) { F.y = gh(F.x); land(); }
+  }
+  else if (F.phase === 'landed') { F.bounce += dt; if (F.out === 'flop') F.y = gh(F.x) + Math.max(0, Math.sin(F.bounce * 9) * 0.6 * Math.exp(-F.bounce * 3)); }
+  machine.position.set(F.x, F.y, 0); machine.rotation.z = F.phase === 'landed' ? (F.out === 'flop' ? Math.PI * 0.6 : 0) : F.pitch;
+  camera.position.set(F.x + 2, Math.max(4, F.y + 2.5), 16); camera.lookAt(F.x + 3, Math.max(2, F.y), 0);
+  sun.position.set(F.x + 4, 12, 6); sun.target.position.set(F.x, 0, 0);
+}
+function land() { F.phase = 'landed'; F.bounce = 0; const dist = Math.max(0, Math.round(F.x + 4));
+  setTimeout(() => { $('rTitle').textContent = TITLES[F.out]; $('rDist').textContent = F.out === 'flop' ? 'Distance: 0 m, straight down the cliff.' : `Distance: ${dist} m`; $('rTip').textContent = TIPS[F.out]; $('result').hidden = false; }, 900); }
+function endFlight() { mode = 'build'; F = null; course.visible = false; benchG.visible = true; stage.classList.remove('sky'); controls.enabled = true; controls.autoRotate = !reduced;
+  machine.position.set(0, 0, 0); machine.rotation.set(0, 0, 0); camera.userData.placed = false; $('result').hidden = true; ['fly', 'save', 'card', 'rand'].forEach(id => $(id).disabled = false); rebuild(); }
+$('fly').addEventListener('click', startFlight); $('again').addEventListener('click', () => { endFlight(); startFlight(); }); $('back').addEventListener('click', endFlight);
+
+// ================= loop =================
+function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+new ResizeObserver(resize).observe(stage); resize();
+let last = performance.now();
+function loop(now) { const dt = Math.min((now - last) / 1000, 0.05); last = now; clock += dt;
+  if (machine) { const a = machine.userData.anim, flying = mode === 'fly' && F && F.phase !== 'landed', rate = flying ? 18 : 5;
+    a.spins.forEach(s => { const sp = s.userData.spin; sp.rotation[s.userData.axis] += dt * rate * (s.userData.axis === 'y' ? 0.6 : 1); });
+    if (a.wings && (S.wings === 'bat' || S.wings === 'bird')) { const f = 0.15 + 0.35 * (0.5 + 0.5 * Math.sin(clock * (flying ? 9 : 3))); a.wings.L.rotation.x = -f; a.wings.R.rotation.x = f; }
+    a.streamers.forEach((s, i) => s.rotation.y = Math.sin(clock * 6 + i) * 0.35);
+    a.wheels.forEach(w => { if (mode === 'fly' && F && (F.phase === 'run' || F.phase === 'roll')) w.userData.spin.rotation.z -= F.vx / w.userData.r * dt; });
+    if (a.kite) a.kite.rotation.x = Math.sin(clock * 1.3) * 0.15; }
+  if (mode === 'fly' && F) stepFlight(dt); else controls.update();
+  renderer.render(scene, camera); requestAnimationFrame(loop); }
+try { const c = JSON.parse(localStorage.getItem('sky-breakers-workbench-current') || 'null'); if (c && BODIES[c.body]) S = Object.assign({}, DEFAULT, c); } catch (e) {}
+renderUI(); rebuild(); renderHangar(); requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

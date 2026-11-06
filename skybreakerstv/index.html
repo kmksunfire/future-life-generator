@@ -1,0 +1,472 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+.ridepick{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin:16px 0}
+.ridepick a{display:flex;flex-direction:column;text-decoration:none;color:#2a1d10;background:#fbf3e2;border:2px solid #c9b48c;border-radius:12px;overflow:hidden;box-shadow:0 3px 10px rgba(60,40,10,.15);transition:transform .15s}
+.ridepick a:hover{transform:translateY(-3px);border-color:#a8321e}
+.ridepick .pic{position:relative;aspect-ratio:16/9;background:#cdbb97}
+.ridepick img{width:100%;height:100%;object-fit:cover;display:block}
+.ridepick b{font-family:var(--display),Georgia,serif;font-weight:400;font-size:20px;line-height:1.1;color:#a8321e;padding:8px 10px 0}
+.ridepick span{font-size:13px;line-height:1.3;padding:2px 10px 10px;color:#5a4a36}
+.ridepick .tag{position:absolute;left:8px;top:8px;background:#a8321e;color:#fff;font:700 12px system-ui,sans-serif;padding:3px 8px;border-radius:999px;padding:3px 8px}
+.ridepick .tag.gold{background:#b8862b}
+.ridepick .lock img{filter:grayscale(.5) brightness(.7)}
+.ridepick .lock .tag{background:#2a1d10}
+</style></head><body>
+<title>Sky Breakers TV</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Sky Breakers: six curious kids, a hidden workshop behind a waterfall, and a brass bird that steals anything shiny. An animated series for ages 6 to 10.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Figtree:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap">
+<style>
+/* Layout: a workshop logbook — sky hero, then pinned "blueprint" sections on misty paper; image slots are labelled frames waiting for ChatGPT art */
+:root{
+  --sky:#cfe6ee; --paper:#f3f7f6; --card:#ffffff; --ink:#1d2b33; --muted:#566a73;
+  --brass:#b07a1c; --brass-ink:#7a5208; --brass-soft:#f4e4c1; --oak:#7b4f2c; --teal:#1d6e78; --line:#cfdcdc;
+  --display:"Lilita One","Arial Rounded MT Bold",ui-rounded,system-ui,sans-serif;
+  --body:"Figtree",ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --mono:"Space Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --sky:#16303a; --paper:#10191e; --card:#172329; --ink:#e7eff0; --muted:#9fb1b6;
+  --brass:#e2ad4f; --brass-ink:#f0c674; --brass-soft:#3a2c12; --oak:#c58e5f; --teal:#6cc5cc; --line:#28393f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --sky:#16303a; --paper:#10191e; --card:#172329; --ink:#e7eff0; --muted:#9fb1b6;
+  --brass:#e2ad4f; --brass-ink:#f0c674; --brass-soft:#3a2c12; --oak:#c58e5f; --teal:#6cc5cc; --line:#28393f; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font:17px/1.6 var(--body)}
+.band{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.in{max-width:1120px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.05;margin:0;text-wrap:balance;letter-spacing:.005em}
+h2{font-size:clamp(32px,5vw,48px)}
+h3{font-size:24px}
+p{margin:0}
+a{color:var(--teal)}
+.eyebrow{font:700 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--brass-ink)}
+.lede{color:var(--muted);max-width:60ch}
+
+/* nav */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--sky)}
+header.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--sky);border-bottom:1px solid var(--line)}
+.nav .in{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
+.brand{font:400 24px var(--display);color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:8px}
+.brand .cog{width:26px;height:26px;border-radius:50%;border:4px dotted var(--brass);display:inline-block}
+.nav nav{display:flex;gap:18px;flex-wrap:wrap}
+.nav nav a{color:var(--ink);text-decoration:none;font-weight:500;font-size:15px}
+.nav nav a:hover{color:var(--brass-ink)}
+@media (max-width:760px){.nav nav{display:none}}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;font:700 16px var(--body);text-decoration:none;border-radius:999px;padding:12px 22px;border:2px solid var(--ink);cursor:pointer}
+.btn.primary{background:var(--brass);color:#1d1406;border-color:var(--brass)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn:hover{transform:translateY(-1px)}
+:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+
+/* image slots */
+.slot{position:relative;max-width:100%;border-radius:14px;overflow:hidden;border:2px dashed var(--brass);
+  background:linear-gradient(160deg,var(--sky),var(--brass-soft));display:grid;place-items:center;text-align:center;padding:14px}
+.slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.slot .tag{font:700 11px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--brass-ink);background:var(--card);border-radius:6px;padding:6px 10px;max-width:90%}
+.r169{aspect-ratio:16/9}.r45{aspect-ratio:4/5}.r43{aspect-ratio:4/3}
+
+/* hero */
+.hero{background:var(--sky)}
+.hero .in{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;padding-block:24px 56px}
+.hero .banner{width:100%;max-width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:18px;display:block}
+.hero .copy{max-width:760px}
+.hero h1{font-size:clamp(44px,7vw,84px)}
+.hero h1 span{color:var(--brass-ink)}
+.hero .copy{display:flex;flex-direction:column;gap:18px;min-width:0}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:700 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px 10px;color:var(--muted)}
+@media (max-width:860px){.hero .in{grid-template-columns:1fr}}
+
+section.block{padding-block:72px}
+.head{display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
+
+/* crew */
+.crew{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.member{display:flex;flex-direction:column;gap:10px;min-width:0}
+.member .role{font:700 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+.member p{color:var(--muted);font-size:15px}
+@media (max-width:900px){.crew{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.crew-div{display:flex;align-items:center;gap:12px;margin:28px 0 20px;font:700 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--brass-ink)}
+.crew-div::before,.crew-div::after{content:"";flex:1;height:1px;background:var(--line)}
+a.slot{display:grid}
+.coloring{background:var(--card);border-block:1px solid var(--line)}
+.cbook{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+@media (max-width:900px){.cbook{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.cbook{grid-template-columns:1fr}}
+.cpage{display:flex;flex-direction:column;gap:6px;text-decoration:none;color:var(--ink);font:400 17px/1.15 var(--display);text-align:center;min-width:0}
+.cpage img{width:100%;aspect-ratio:1650/1275;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#fff;box-shadow:0 4px 14px rgba(20,40,50,.12);transition:transform .15s}
+.cpage:hover img{transform:translateY(-3px) rotate(-1deg)}
+.cnote{margin-top:16px;color:var(--muted);font-size:15px}
+
+/* workshop */
+.workshop{background:var(--card);border-block:1px solid var(--line)}
+.ws-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:32px;align-items:start}
+.inv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+@media (max-width:860px){.inv{grid-template-columns:1fr}}
+.inv-item{display:grid;grid-template-columns:120px minmax(0,1fr);gap:14px;align-items:center}
+.inv-item .slot{padding:6px}
+.inv-item .slot .tag{font-size:9px;padding:4px 6px}
+.inv-item h3{font-size:20px}
+.inv-item p{color:var(--muted);font-size:15px}
+@media (max-width:860px){.ws-grid{grid-template-columns:1fr}}
+
+/* episodes */
+.season{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.season h3{font-size:28px}
+.eps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.ep{display:flex;flex-direction:column;gap:10px;min-width:0}
+.ep .num{font:700 12px var(--mono);letter-spacing:.08em;color:var(--brass-ink)}
+.ep h3{font-size:22px}
+.ep p{color:var(--muted);font-size:15px}
+.soon{font:700 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+@media (max-width:860px){.eps{grid-template-columns:1fr}}
+
+/* behind the scenes */
+.bts{background:var(--sky)}
+.pipe{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;list-style:none;padding:0;margin:0 0 28px;counter-reset:step}
+.pipe li{background:var(--card);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:6px;counter-increment:step;min-width:0}
+.pipe li::before{content:"Step " counter(step);font:700 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--brass-ink)}
+.pipe b{font-family:var(--display);font-weight:400;font-size:20px}
+.pipe span{color:var(--muted);font-size:15px}
+.clip{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+.clip video{width:100%;max-width:100%;aspect-ratio:16/9;border-radius:14px;background:#000;display:block}
+.clip figcaption{font:700 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.bts-row{align-items:start;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:860px){.pipe{grid-template-columns:repeat(2,minmax(0,1fr))}.bts-row{grid-template-columns:1fr}}
+
+/* parents */
+.parents{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.pcard{border-top:4px solid var(--brass);background:var(--card);border-radius:0 0 14px 14px;padding:18px;display:flex;flex-direction:column;gap:8px}
+.pcard p{color:var(--muted);font-size:15px}
+@media (max-width:860px){.parents{grid-template-columns:1fr}}
+
+/* signup */
+.signup{background:var(--ink);color:var(--paper)}
+.signup .in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px;align-items:center;padding-block:56px}
+.signup .eyebrow{color:var(--brass)}
+.signup p{color:var(--paper);opacity:.8}
+form.join{display:flex;gap:10px;flex-wrap:wrap}
+form.join input{flex:1 1 220px;min-width:0;font:16px var(--body);padding:12px 16px;border-radius:999px;border:2px solid var(--brass);background:var(--paper);color:var(--ink)}
+.msg{font-size:15px;margin-top:10px;color:var(--brass)}
+@media (max-width:760px){.signup .in{grid-template-columns:1fr}}
+
+.next{margin-top:36px;display:flex;flex-wrap:wrap;gap:18px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.next img{width:100%;max-width:520px;border-radius:8px;display:block}
+.next h3{font-size:24px}
+/* soundtrack */
+.ost{background:var(--ink);color:var(--paper)}
+.ost .eyebrow{color:var(--brass)}
+.ost .lede{color:var(--paper);opacity:.75}
+.ost-top{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:28px;align-items:end;margin-bottom:28px}
+.theme{background:var(--brass);color:#1d1406;border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:6px}
+.theme .eyebrow{color:#1d1406;opacity:.75}
+.theme h3{font-size:28px}
+.theme p{font-size:15px}
+.tracks{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.trk{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:14px;align-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px;min-width:0}
+.trk .n{font:700 22px var(--mono);color:var(--brass);text-align:center}
+.trk h3{font-size:20px;color:var(--paper)}
+.trk.tba h3{opacity:.55}
+.trk .meta{font:700 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;opacity:.65;margin-top:2px}
+.trk audio{width:100%;margin-top:8px;height:36px}
+.st{font:700 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;border-radius:999px;padding:4px 9px;white-space:nowrap;border:1px solid currentColor}
+.st.out{background:var(--brass);color:#1d1406;border-color:var(--brass)}
+.st.wip{color:#6cc5cc}
+.st.soon{color:var(--paper);opacity:.5}
+.feat{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:24px;align-items:center;margin-bottom:28px}
+.feat-copy{display:flex;flex-direction:column;gap:10px;min-width:0}
+.feat-copy h3{font-size:32px;color:var(--paper)}
+.feat-copy p{opacity:.8}
+.feat-copy .btn{align-self:flex-start}
+.feat-thumbs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ost .video{aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000}
+.ost .video iframe{width:100%;height:100%;border:0;display:block}
+@media (max-width:860px){.feat{grid-template-columns:1fr}}
+.ost-note{margin-top:20px;font-size:14px;opacity:.65}
+@media (max-width:860px){.ost-top,.tracks{grid-template-columns:1fr}}
+
+footer{padding-block:28px;color:var(--muted);font-size:14px}
+footer .in{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+/* latest video: first thing on the page */
+.latest{background:radial-gradient(ellipse at 50% 0%,#fff6dc 0%,var(--sky) 55%,#a9d0de 100%)}
+.latest .in{min-height:calc(100svh - 60px);padding-block:14px 22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.splashlogo{width:min(520px,82vw);height:auto;filter:drop-shadow(0 6px 12px rgba(30,50,60,.3))}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.latest .player{width:min(100%,calc((100svh - 330px) * 16 / 9));min-width:min(100%,320px);aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#000;box-shadow:0 14px 40px rgba(20,40,50,.3)}
+.latest .player iframe{width:100%;height:100%;border:0;display:block}
+.latest .ctas{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.btn.big{font-size:20px;padding:15px 30px}
+.latest .more{font:700 13px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+.hero h2{font-size:clamp(40px,6vw,72px)}
+.hero h2 span{color:var(--brass-ink)}
+/* flight lab promo */
+.lab{background:var(--brass-soft)}
+.lab-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:32px;align-items:center}
+.lab-copy{display:flex;flex-direction:column;gap:14px;min-width:0}
+.lab-copy ul{margin:0;padding-left:20px;color:var(--muted)}
+.lab-copy .ctas{display:flex;gap:10px;flex-wrap:wrap}
+@media (max-width:860px){.lab-grid{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}.btn:hover{transform:none}}
+</style>
+
+<header class="nav band">
+  <div class="in">
+    <a class="brand" href="#top"><span class="cog" aria-hidden="true"></span>Sky Breakers</a>
+    <nav aria-label="Sections">
+      <a href="#latest">Latest Video</a>
+      <a href="#flight-lab">Flight Lab</a>
+      <a href="#crew">The Crew</a>
+      <a href="#workshop">The Workshop</a>
+      <a href="#episodes">Episodes</a>
+      <a href="#soundtrack">Soundtrack</a>
+      <a href="#behind">Behind the Scenes</a>
+      <a href="#parents">For Parents</a>
+      <a href="https://www.mkecreatives.com">MKE Creatives ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="latest band" id="latest">
+    <div class="in">
+      <a href="index.html" title="Sky Breakers home"><img class="splashlogo" src="media/logo.png" alt="Sky Breakers"></a>
+      <h1 class="sr">Sky Breakers: watch the newest video</h1>
+      <div class="player"><iframe src="https://www.youtube-nocookie.com/embed/videoseries?list=UU090hqOx2MRftaApSNVngBg" title="Latest from Sky Breakers TV" style="width:100%;height:100%;border:0;display:block" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" loading="lazy"></iframe></div>
+      <div class="ctas">
+        <a class="btn primary big" href="flight-lab.html">Enter the Flight Lab →</a>
+        <a class="btn ghost" href="https://www.youtube.com/channel/UC090hqOx2MRftaApSNVngBg">Subscribe on YouTube</a>
+      </div>
+      <a class="more" href="#flight-lab">More below ↓</a>
+    </div>
+  </section>
+
+  <section class="block band lab" id="flight-lab">
+    <div class="in lab-grid">
+      <a class="slot r169" href="flight-lab.html" aria-label="Open the Flight Lab"><img src="media/rotor-craft.jpg" alt="Finn and Toby in the spiral-rotor craft on the cliff"></a>
+      <div class="lab-copy">
+        <span class="eyebrow">Play · Build · Fly</span>
+        <h2>The Flight Lab</h2>
+        <p class="lede">Turn and zoom 3D paper models of every machine the crew builds, plus Leonardo da Vinci's real flying machines drawn straight from his notebooks.</p>
+        <ul>
+          <li>New: Skywing River Run. Fly Yvonne's bird-wing suit over the river through a golden canyon.</li>
+          <li>The Inventor's Workbench. Design your own flying machine and take it for a test flight.</li>
+          <li>Trail Run. Race the Pedal Kart or the Fat-Tire Kiteboard down a bumpy dirt trail. Works with phone tilt.</li>
+          <li>Flying games: the wing-suit canyon run and signal flares</li>
+          <li>Paper builds for kids at home: the flapping brass bird, the getaway zipline, straw rockets and the whirlybird</li>
+        </ul>
+        <h3 style="font-family:var(--display);font-weight:400;font-size:26px;margin:18px 0 0">Pick your ride</h3><div class="ridepick" aria-label="Pick your ride">
+  <a href="skywing.html"><div class="pic"><img src="media/rides/wings.jpg" alt="Yvonne flying the wing suit over the canyon river" loading="lazy"><i class="tag">Fly</i></div><b>Wing Suit</b><span>Skywing River Run. Fly Yvonne's wings through the canyon.</span></a>
+  <a href="trail-run.html?ride=kart"><div class="pic"><img src="media/rides/kart.jpg" alt="The two-seat pedal kart on the dirt trail" loading="lazy"><i class="tag">Race</i></div><b>Pedal Kart</b><span>Trail Run. Finn and Toby race the dirt trail.</span></a>
+  <a href="trail-run.html?ride=board"><div class="pic"><img src="media/rides/board.jpg" alt="Yvonne on the fat-tire kiteboard" loading="lazy"><i class="tag">Race</i></div><b>Kiteboard</b><span>Trail Run. Yvonne rides the kite down the canyon.</span></a>
+  <a href="trail-run.html?ride=claw" class="clawcard"><div class="pic"><img src="media/rides/claw.jpg" alt="The Iron Claw, a winged kart with a kite" loading="lazy"><i class="tag gold">Secret ride</i></div><b>The Iron Claw</b><span>Earn 3 golden feathers to unlock it.</span></a>
+  <a href="workbench.html"><div class="pic"><img src="media/rides/build.jpg" alt="A homemade glider on the workbench" loading="lazy"><i class="tag">Build</i></div><b>Build Your Own</b><span>Invent a machine, then race it.</span></a>
+</div>
+<script>(function(){var o=false;try{o=localStorage.getItem('sb-claw')==='1'||localStorage.getItem('sb-bonus-unlocked')==='1'}catch(e){}document.querySelectorAll('.clawcard').forEach(function(a){if(o){a.querySelector('.tag').textContent='Unlocked';a.querySelector('span').textContent='The best flyer in the game.'}else{a.classList.add('lock');a.querySelector('.tag').textContent='🔒 Locked'}})})();</script><div class="ctas"><a class="btn primary" href="flight-lab.html">Open the Flight Lab</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block band" id="crew">
+    <div class="in">
+      <div class="head">
+        <span class="eyebrow">Meet the crew</span>
+        <h2>Six kids, one workbench</h2>
+        <p class="lede">Everybody gets a handhold on the workshop door. Everybody gets a job.</p>
+      </div>
+      <div class="crew">
+        <article class="member"><div class="slot r45"><img src="media/toby.jpg" alt="Toby, a red-haired boy in a work apron holding a wooden wheel"></div><span class="role">The Builder</span><h3>Toby</h3><p>Goggles up, tool roll ready. If it's broken, Toby is already taking it apart.</p></article>
+        <article class="member"><div class="slot r45"><img src="media/finn.jpg" alt="Finn, a boy with messy brown hair, red shirt and blue scarf"></div><span class="role">The Little Thief</span><h3>Finn</h3><p>Fast hands, faster feet, and a boomerang on his belt. He shares whatever he grabs.</p></article>
+        <article class="member"><div class="slot r45"><img src="media/mara.jpg" alt="Mara, a girl with a long braid and a purple cloak"></div><span class="role">The Lookout</span><h3>Mara</h3><p>Eyes on every rooftop. Her whistle means duck, and she spots trouble first.</p></article>
+        <article class="member"><div class="slot r45"><img src="media/yvonne.jpg" alt="Yvonne, a girl with long blonde braids, fur collar and blue tunic, holding a rolled map"></div><span class="role">The Wayfinder</span><h3>Yvonne</h3><p>Fallen trees, cliffs, river stones. Yvonne finds the way up and gets there first.</p></article>
+        <article class="member"><div class="slot r45"><img src="media/lilly.jpg" alt="Lilly, a girl with pigtails and a yellow dress holding a loaf of bread"></div><span class="role">The Heart</span><h3>Lilly</h3><p>Calm when everyone else isn't, and the first to split her bread. She keeps the crew together.</p></article>
+        <article class="member"><div class="slot r45"><img src="media/pip.jpg" alt="Pip, a small boy with curly hair hugging a stuffed fox"></div><span class="role">The Smallest Protector</span><h3>Pip</h3><p>The youngest, never without his stuffed fox. Small, but he stands in front of his friends.</p></article>
+      </div>
+      <div class="crew-div" aria-hidden="true">Also in the workshop</div>
+      <div class="crew">
+        <article class="member"><div class="slot r45"><img src="media/brass-bird.jpg" alt="The brass bird flying off with bread and a rolled map"></div><span class="role">The crew's mascot</span><h3>The brass bird</h3><p>A clockwork starling with a wind-up key. It steals maps, bread and washers, and sometimes it is showing the crew the way.</p></article>
+        <article class="member"><a class="slot r45" href="#workshop"><img src="media/workshop.jpg" alt="The crew on the workshop terrace with the rotor craft and wing suit, waterfall behind"></a><span class="role">Their hideout</span><h3>The Workshop</h3><p>A secret lab behind the waterfall, with an oak bench, a brass orrery and a launch terrace.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="hero band" id="about">
+    <div class="in">
+      <img class="banner" src="media/keyart-logo.jpg" alt="Skybreakers logo with Mara flying a canvas wing glider above the clouds">
+      <div class="copy">
+        <span class="eyebrow">A new animated series · Ages 6–10</span>
+        <h2>A bird stole the map. <span>Six kids are getting it back.</span></h2>
+        <p class="lede">Behind a waterfall sits a vanished inventor's secret workshop. Now it belongs to Finn, Mara, Toby, Yvonne, Lilly and Pip, along with a brass clockwork bird that steals anything shiny.</p>
+        <div class="ctas">
+          <a class="btn primary" href="#latest">Watch the latest video</a>
+          <a class="btn ghost" href="#join">Get updates</a>
+        </div>
+        <div class="chips"><span class="chip">Coming soon</span><span class="chip">Inventing</span><span class="chip">Treasure hunts</span><span class="chip">Flying machines</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block band workshop" id="workshop">
+    <div class="in">
+      <div class="head">
+        <span class="eyebrow">Behind the waterfall</span>
+        <h2>The Workshop</h2>
+        <p class="lede">Inventions so far, built from the vanished inventor's plans.</p>
+      </div>
+      <div class="inv">
+          <div class="inv-item"><div class="slot r43"><img src="media/rotor-craft.jpg" alt="Finn and Toby in the spiral-rotor craft on the cliff"></div><div><h3>Spiral-rotor craft</h3><p>A two-seat flying machine from the inventor's lost plans.</p></div></div>
+          <div class="inv-item"><div class="slot r43"><img src="media/wing-suit.jpg" alt="Yvonne strapped into the bird-wing suit"></div><div><h3>Bird-wing suit</h3><p>Canvas wings with brass joints. Still in testing.</p></div></div>
+          <div class="inv-item"><div class="slot r43"><span class="tag">Episode still</span></div><div><h3>Rope launcher</h3><p>Built from a wrecked spring. Trial one landed in a puddle.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block band" id="episodes">
+    <div class="in">
+      <div class="head">
+        <span class="eyebrow">Episodes</span>
+        <h2>Season One</h2>
+      </div>
+      <div class="season"><h3>The Skybreaker's Vault</h3><span class="soon">Coming soon</span></div>
+      <div class="eps">
+        <article class="ep"><div class="slot r169"><img src="media/brass-bird.jpg" alt="Episode 1: the brass bird steals the map"></div><span class="num">EPISODE 1</span><h3>The Bird That Stole the Map</h3><p>A broken brass bird wakes up, grabs Finn's breakfast and the inventor's map, and leads a rooftop chase to the observatory.</p></article>
+        <article class="ep"><div class="slot r169"><img src="media/ep2-waterfall.jpg" alt="Episode 2: Yvonne points to the workshop behind the waterfall"></div><span class="num">EPISODE 2</span><h3>The Workshop Behind the Waterfall</h3><p>The map points behind the falls. One rope launcher, one old pulley, and a round stone door with six handholds.</p></article>
+        <article class="ep"><div class="slot r169"><span class="tag">Ep 3 thumbnail · prompt 7</span></div><span class="num">EPISODE 3</span><h3>Do Not Pull That Lever</h3><p>Someone pulls the lever. The whole workshop wakes up, and a sun key rises from the floor.</p></article>
+      </div>
+      <div class="next"><img src="media/s2-banner.jpg" alt="The Skybreakers, Season Two: The Windrunner's Treasure"><div><span class="eyebrow">Up next</span><h3>Season Two: The Windrunner's Treasure</h3></div></div>
+    </div>
+  </section>
+
+  <section class="block band ost" id="soundtrack">
+    <div class="in">
+      <div class="ost-top">
+        <div class="head" style="margin:0">
+          <span class="eyebrow">Original soundtrack · Season One</span>
+          <h2>Sing along with the crew</h2>
+          <p class="lede">Every episode gets two original songs, each with its own music video. Sixteen tracks for Season One.</p>
+        </div>
+        <div class="theme">
+          <span class="eyebrow">Main theme</span>
+          <h3>The Sky Breakers ABC</h3>
+          <p>The show's intro song. Premieres this holiday season.</p>
+          <a href="abc.html" style="color:#1d1406;font-weight:700">See the teaser page →</a>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="slot r169"><img src="media/hawks-band.jpg" alt="The crew performing When Hawks Collide on stage in face paint"></div>
+        <div class="feat-copy">
+          <span class="eyebrow">Out now · Music video</span>
+          <h3>When Hawks Collide</h3>
+          <p>The crew's debut track: a Viking rap with face paint, war drums and the wing suit on stage.</p>
+          <div class="feat-thumbs"><div class="slot r169"><img src="media/hawks-yvonne.jpg" alt="Yvonne in blue face paint"></div><div class="slot r169"><img src="media/hawks-pip.jpg" alt="Pip in blue face paint"></div></div>
+          <a class="btn primary" href="https://www.youtube.com/channel/UC090hqOx2MRftaApSNVngBg">Watch on YouTube</a>
+        </div>
+      </div>
+      <div class="feat">
+        <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/olq8bKnPNPw" title="Beyond the Gorge | Sky Breakers Episode 1 Soundtrack" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" loading="lazy"></iframe></div>
+        <div class="feat-copy">
+          <span class="eyebrow">Out now · Episode 1 soundtrack</span>
+          <h3>Beyond the Gorge</h3>
+          <p>Six kids. One wrecked flying machine. A gorge nobody's ever crossed.</p>
+        </div>
+      </div>
+      <ol class="tracks" id="trackList"></ol>
+      <p class="ost-note">All music videos are AI-generated.</p>
+    </div>
+  </section>
+
+  <section class="block band bts" id="behind">
+    <div class="in">
+      <div class="head">
+        <span class="eyebrow">Behind the scenes</span>
+        <h2>How an episode gets made</h2>
+        <p class="lede">Sky Breakers is made with AI tools, start to finish, by one artist in Milwaukee. Here is the whole process, including the shots that went wrong.</p>
+      </div>
+      <ol class="pipe">
+        <li><b>Script</b><span>Every episode is written and shot-listed, line by line.</span></li>
+        <li><b>Storyboard</b><span>Each shot is drawn and timed before any art is made.</span></li>
+        <li><b>Stills</b><span>Production frames are generated to match the boards.</span></li>
+        <li><b>Animation</b><span>Stills become moving shots, then get cut together.</span></li>
+      </ol>
+      <div class="bts-row">
+                <figure class="clip"><img src="media/storyboard-wingsuit.jpg" alt="Storyboard frames of Yvonne launching the wing suit" style="width:100%;border-radius:14px;display:block"><figcaption>Storyboard: the wing-suit launch</figcaption></figure>
+        <div class="slot r169"><span class="tag">Bloopers &amp; AI fails</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block band" id="parents">
+    <div class="in">
+      <div class="head">
+        <span class="eyebrow">For parents</span>
+        <h2>What your kids get out of it</h2>
+      </div>
+      <div class="parents">
+        <div class="pcard"><h3>Made for ages 6–10</h3><p>Adventure without real danger. The worst that happens is a soggy rope or a stolen sandwich.</p></div>
+        <div class="pcard"><h3>Learning by building</h3><p>Every episode has an invention that fails before it works, so kids see that trying again is part of making things.</p></div>
+        <div class="pcard"><h3>Made with AI</h3><p>The series is created with AI image and animation tools, and every video is labeled as AI-generated.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="signup band" id="join">
+    <div class="in">
+      <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+        <span class="eyebrow">Get updates</span>
+        <h2>Be first to see Episode 1</h2>
+        <p>New clips, behind-the-scenes posts and the premiere date.</p>
+      </div>
+      <div>
+        <form class="join" id="joinForm">
+          <label for="email" class="eyebrow" style="flex-basis:100%;color:var(--paper)">Parent's email</label>
+          <input id="email" type="email" required placeholder="you@example.com" autocomplete="email">
+          <button class="btn primary" type="submit">Sign up</button>
+        </form>
+        <p class="msg" id="joinMsg" hidden>You're on the list.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="band">
+  <div class="in">
+    <span>© 2026 Sky Breakers · An MKE Creatives series, Milwaukee</span>
+    <a href="https://www.mkecreatives.com">mkecreatives.com</a>
+  </div>
+</footer>
+
+<script>
+/* Soundtrack: edit titles, status ("out" | "wip" | "soon") and add audio: "media/track01.mp3" when ready */
+var TRACKS=[
+  {title:"When Hawks Collide",note:"Viking rap",status:"out"},
+  {title:"Beyond the Gorge",note:"Episode 1 soundtrack",status:"out"},{},{},{},{},{},{},{},{},{},{},{},{},{},{}
+];
+(function(){
+  var list=document.getElementById("trackList"),labels={out:"Out now",wip:"In production",soon:"Coming soon"};
+  TRACKS.forEach(function(t,i){
+    var n=String(i+1).padStart(2,"0"),ep="Episode "+(Math.floor(i/2)+1),st=t.status||"soon";
+    var li=document.createElement("li");li.className="trk"+(t.title?"":" tba");
+    li.innerHTML='<span class="n">'+n+'</span><div style="min-width:0"><h3></h3><div class="meta"></div></div><span class="st '+st+'">'+labels[st]+'</span>';
+    li.querySelector("h3").textContent=t.title||"Track "+n+" · title TBA";
+    li.querySelector(".meta").textContent=ep+(t.note?" · "+t.note:"");
+    if(t.audio){var a=document.createElement("audio");a.controls=true;a.preload="none";a.src=t.audio;li.children[1].appendChild(a);}
+    list.appendChild(li);
+  });
+})();
+/* Email sign-ups go straight into the "Sky Breakers Updates (skybreakerstv.com sign-ups)" Google Form. */
+var FORM_URL="https://docs.google.com/forms/d/e/1FAIpQLSdqNBwbsZICxf4aTr0YFGb4_jr8g6mmzC2IQNHYoU3NNZ2elA/formResponse", FORM_FIELD="entry.1507120073";
+document.getElementById("joinForm").addEventListener("submit",function(e){
+  e.preventDefault();
+  var form=this,msg=document.getElementById("joinMsg"),email=document.getElementById("email").value.trim(),btn=form.querySelector("button");
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){document.getElementById("email").focus();return;}
+  btn.disabled=true; var body=new URLSearchParams(); body.append(FORM_FIELD,email);
+  fetch(FORM_URL,{method:"POST",mode:"no-cors",body:body})
+    .then(function(){form.hidden=true;msg.textContent="You're on the list. Thanks!";msg.hidden=false;})
+    .catch(function(){btn.disabled=false;msg.textContent="That didn't go through. Please try again.";msg.hidden=false;});
+});
+</script>
+
+</body></html>

@@ -1,0 +1,7 @@
+{
+  "kart": { "file": "kart.glb", "rotY": 0, "includesRiders": false },
+  "board": { "file": "kiteboard.glb" },
+  "yvonne": { "file": "yvonne.glb" },
+  "finn": { "file": "finn.glb" },
+  "toby": { "file": "toby.glb" }
+}

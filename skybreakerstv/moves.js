@@ -8,6 +8,8 @@ window.SBMoves = (function () {
     el.addEventListener('pointermove', function (e) { if (pts && e.pointerId === id) pts.push([e.clientX, e.clientY, performance.now()]); });
     function up(e) { if (!pts || e.pointerId !== id) return; var p = pts; pts = null; if (p.length < 3) return;
       var a = p[0], b = p[p.length - 1], dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy), dur = b[2] - a[2];
+      // if the game is turned to stay sideways (stage data-rot), read the swipe in the game's own frame
+      var rot = (+el.dataset.rot || 0) * Math.PI / 180; if (rot) { var c = Math.cos(rot), sn = Math.sin(rot), rx = dx * c + dy * sn, ry = -dx * sn + dy * c; dx = rx; dy = ry; }
       // total turning of the path (about 90 degrees = a quarter-circle curl), plus every full circle drawn, in order
       var turn = 0, hi = 0, lo = 0, loops = [], FULL = 5.3;
       for (var i = 2; i < p.length; i++) { var u = [p[i - 1][0] - p[i - 2][0], p[i - 1][1] - p[i - 2][1]], v = [p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]];

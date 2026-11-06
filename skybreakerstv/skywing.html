@@ -193,6 +193,7 @@ body.tiltonly .ctl .stack, body.tiltonly .ctl .arrow, body.tiltonly #hTilt, body
 .pop .popnote { font-size: 13px; color: var(--muted, #6b5a44); margin: 0; }
 @media (max-width: 560px), (max-height: 460px) { .pop .popgrid { grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)) !important; } .pop .popgrid > button span { display: none; } .pophead h2 { font-size: 21px !important; } .card.pop { padding: 6px; } .card.pop > div { padding: 8px; } }
 .mkelink { margin-left: auto; opacity: .85; }
+.stage.rotlock { position: fixed !important; left: 50% !important; top: 50% !important; width: 100vh !important; height: 100vw !important; max-width: none !important; aspect-ratio: auto !important; margin: 0 !important; border-radius: 0 !important; border: 0 !important; z-index: 100; transform: translate(-50%, -50%) rotate(var(--rot)); }
 </style>
 </head>
 <body>
@@ -827,7 +828,22 @@ stage.addEventListener('pointermove', e => { if (touch.on && e.pointerId === tou
 ['pointerup', 'pointercancel'].forEach(t => stage.addEventListener(t, e => { if (e.pointerId === touch.id) touch.on = false; }));
 window.addEventListener('keydown', e => { const k = e.key.toLowerCase(); if (['arrowleft', 'arrowright', 'arrowup', 'arrowdown', ' '].includes(k)) e.preventDefault(); if ((k === ' ' || k === 'b') && !e.repeat) beat(); keys[k] = true; });
 window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
-window.addEventListener('deviceorientation', e => { if (!tilt.on || e.gamma == null) return; tilt.seen = true; const ang = (screen.orientation && screen.orientation.angle) || window.orientation || 0; let lr = e.gamma, fb = e.beta;
+// ---------- keep the game sideways once a run starts ----------
+// Tipping the phone far back or forward makes the phone think it was turned upright, and the page flips to tall.
+// Websites can't switch rotation off (iPhone ignores it), so the game remembers which way it was held at the start
+// and, if the page flips mid-run, turns itself straight back. Tilt and swipes keep reading the locked direction.
+const OLOCK = { ang: null };
+const curAng = () => { const a = (screen.orientation && typeof screen.orientation.angle === 'number') ? screen.orientation.angle : (window.orientation || 0); return ((a % 360) + 360) % 360; };
+function applyRotLock() { let d = OLOCK.ang == null ? 0 : OLOCK.ang - curAng(); d = ((d + 540) % 360) - 180; if (d === -180) d = 180;
+  stage.classList.toggle('rotlock', d !== 0); stage.style.setProperty('--rot', d + 'deg'); stage.dataset.rot = d; }
+function lockOrientation() { const a = curAng(); OLOCK.ang = (a === 90 || a === 270) ? a : null;
+  try { if (OLOCK.ang != null && screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => {}); } catch (e) {}   // Android honors this
+  applyRotLock(); }
+function unlockOrientation() { OLOCK.ang = null; try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) {} applyRotLock(); }
+window.addEventListener('orientationchange', () => setTimeout(applyRotLock, 80)); window.addEventListener('resize', () => applyRotLock());
+if (screen.orientation && screen.orientation.addEventListener) screen.orientation.addEventListener('change', () => applyRotLock());
+const tiltAng = () => OLOCK.ang != null ? OLOCK.ang : curAng();
+window.addEventListener('deviceorientation', e => { if (!tilt.on || e.gamma == null) return; tilt.seen = true; const ang = tiltAng(); let lr = e.gamma, fb = e.beta;
   if (ang === 90) { lr = e.beta; fb = -e.gamma; } else if (ang === -90 || ang === 270) { lr = -e.beta; fb = e.gamma; } if (tilt.b0 === null) tilt.b0 = fb;
   tilt.x = clamp((Math.abs(lr) < 3 ? 0 : lr - Math.sign(lr) * 3) / 18, -1, 1); const d = fb - tilt.b0; tilt.y = Math.abs(d) < 6 ? 0 : clamp((d - Math.sign(d) * 6) / 12, -1, 1);
   const now = performance.now(), rate = tilt.pt ? (fb - tilt.pfb) / Math.max(1, now - tilt.pt) * 1000 : 0; tilt.pt = now; tilt.pfb = fb; if (rate < -240 && mode === 'run') beat(); });
@@ -948,7 +964,7 @@ function needTilt(go) { if (!TILT_ONLY || tilt.on) return go();
     if (!ok) { $('tiltText').textContent = 'Motion access was blocked. On iPhone: close this tab, reopen the game and tap Allow. Or play with touch instead.'; $('tiltGo').textContent = 'Play with touch'; $('tiltGo').onclick = () => { TILT_ONLY = false; document.body.classList.remove('tiltonly'); card.hidden = true; go(); }; return; }
     tilt.on = true; tilt.b0 = null; tilt.seen = false; card.hidden = true; go();
     setTimeout(() => { if (tilt.on && !tilt.seen) { TILT_ONLY = false; tilt.on = false; document.body.classList.remove('tiltonly'); flash('No motion sensor here. Use touch.', 1800); } }, 2500); }; }
-function start() { FIN = null; resetTrails(); if (deck) { scene.remove(deck); deck = null; } P = newPlayer(); buildItems(); mode = 'intro'; $('title').hidden = true; $('end').hidden = true; $('hud').hidden = false; SFX.unlock(); SFX.restartMusic();
+function start() { FIN = null; resetTrails(); lockOrientation(); if (deck) { scene.remove(deck); deck = null; } P = newPlayer(); buildItems(); mode = 'intro'; $('title').hidden = true; $('end').hidden = true; $('hud').hidden = false; SFX.unlock(); SFX.restartMusic();
   SFX.primeVoice();
   playIntro(() => { mode = 'run'; flash('Fly!', 900); SFX.say("Let's fly!", 2, 1.25); SFX.cheer(); }); }
 function finish(won) { mode = 'end'; SFX.stopMusic(); if (won) SFX.finish(); const all = won && P.rings === RING_COUNT; if (all) found('perfect'); const _x = 0, bonus = won ? 200 + P.lives * 100 + (all ? 500 : 0) : 0, total = P.score + bonus;
@@ -986,7 +1002,7 @@ function renderCourses() { const el = $('courses'); el.innerHTML = ''; COURSES.f
   b.innerHTML = `<i class="thumb"><img src="media/courses/skywing-${c.id}.jpg" alt="">${locked ? '<em>🔒</em>' : ''}</i><b>${i + 1}. ${c.name}</b><span>${locked ? 'Locked · ' : ''}${c.sub}${c.board ? ' · Top 10' : ''}${best ? ' · best ' + best : ''}</span>`;
   b.addEventListener('click', () => { if (locked) { if (!el.querySelector('.unlock')) el.appendChild(SBUnlock.panel(() => { renderCourses(); flash('Bonus course unlocked!', 1400); })); return; } setCourse(c.id); if (!$('coursePop').hidden) { closePop(); needTilt(start); } }); el.appendChild(b); }); }
 COURSES.forEach(c => { const im = new Image(); im.src = `media/courses/skywing-${c.id}.jpg`; });
-function openPop() { renderCourses(); $('coursePop').hidden = false; }
+function openPop() { unlockOrientation(); renderCourses(); $('coursePop').hidden = false; }
 function closePop() { $('coursePop').hidden = true; }
 $('popBack').addEventListener('click', closePop);
 const nextCourse = () => { let i = COURSES.findIndex(c => c.id === course); for (let k = 0; k < COURSES.length; k++) { i = (i + 1) % COURSES.length; if (!COURSES[i].bonus || SBUnlock.isOpen()) return COURSES[i]; } return COURSES[0]; };

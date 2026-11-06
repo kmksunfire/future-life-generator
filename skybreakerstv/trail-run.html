@@ -202,6 +202,7 @@ body.tiltonly .ctl .stack, body.tiltonly .ctl .arrow, body.tiltonly #hTilt, body
 .wingpick { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
 .wingpick button { all: unset; cursor: pointer; font: 700 12px var(--body, system-ui); padding: 4px 10px; border: 2px solid var(--rule); border-radius: 999px; background: var(--card2); color: var(--ink); }
 .wingpick button[aria-pressed="true"] { border-color: var(--red); background: #fff7e6; }
+.stage.rotlock { position: fixed !important; left: 50% !important; top: 50% !important; width: 100vh !important; height: 100vw !important; max-width: none !important; aspect-ratio: auto !important; margin: 0 !important; border-radius: 0 !important; border: 0 !important; z-index: 100; transform: translate(-50%, -50%) rotate(var(--rot)); }
 </style>
 </head>
 <body>
@@ -1119,8 +1120,23 @@ function pitchInput() { let p = 0; if (keys.arrowdown || keys.s) p += 1; if (key
   if (tilt.on) p += tilt.y; return clamp(p, -1, 1); }
 // phone tilt: side to side steers; tip back (top toward you) jumps, tip forward boosts. Calibrated to how the phone is held at the start.
 const tilt = { on: false, b0: null, x: 0, y: 0, seen: false };
+// ---------- keep the game sideways once a run starts ----------
+// Tipping the phone far back or forward makes the phone think it was turned upright, and the page flips to tall.
+// Websites can't switch rotation off (iPhone ignores it), so the game remembers which way it was held at the start
+// and, if the page flips mid-run, turns itself straight back. Tilt and swipes keep reading the locked direction.
+const OLOCK = { ang: null };
+const curAng = () => { const a = (screen.orientation && typeof screen.orientation.angle === 'number') ? screen.orientation.angle : (window.orientation || 0); return ((a % 360) + 360) % 360; };
+function applyRotLock() { let d = OLOCK.ang == null ? 0 : OLOCK.ang - curAng(); d = ((d + 540) % 360) - 180; if (d === -180) d = 180;
+  stage.classList.toggle('rotlock', d !== 0); stage.style.setProperty('--rot', d + 'deg'); stage.dataset.rot = d; }
+function lockOrientation() { const a = curAng(); OLOCK.ang = (a === 90 || a === 270) ? a : null;
+  try { if (OLOCK.ang != null && screen.orientation && screen.orientation.lock) screen.orientation.lock('landscape').catch(() => {}); } catch (e) {}   // Android honors this
+  applyRotLock(); }
+function unlockOrientation() { OLOCK.ang = null; try { if (screen.orientation && screen.orientation.unlock) screen.orientation.unlock(); } catch (e) {} applyRotLock(); }
+window.addEventListener('orientationchange', () => setTimeout(applyRotLock, 80)); window.addEventListener('resize', () => applyRotLock());
+if (screen.orientation && screen.orientation.addEventListener) screen.orientation.addEventListener('change', () => applyRotLock());
+const tiltAng = () => OLOCK.ang != null ? OLOCK.ang : curAng();
 window.addEventListener('deviceorientation', e => { if (!tilt.on || e.gamma == null) return; tilt.seen = true;
-  const ang = (screen.orientation && screen.orientation.angle) || window.orientation || 0; let lr = e.gamma, fb = e.beta;
+  const ang = tiltAng(); let lr = e.gamma, fb = e.beta;
   if (ang === 90) { lr = e.beta; fb = -e.gamma; } else if (ang === -90 || ang === 270) { lr = -e.beta; fb = e.gamma; }
   if (tilt.b0 === null) tilt.b0 = fb; const dz = Math.abs(lr) < 3 ? 0 : lr - Math.sign(lr) * 3; tilt.x = clamp(dz / 18, -1, 1);
   const now = performance.now(), rate = tilt.pt ? (lr - tilt.plr) / Math.max(1, now - tilt.pt) * 1000 : 0; tilt.pt = now; tilt.plr = lr;
@@ -1212,7 +1228,7 @@ function placeRivals(dt) { const lim = Math.max(1, RW - 1);
   if (mode === 'run' && rivals.length) { const p = racePlace(); $('hPlace').textContent = ORD[p - 1] + ' place'; $('hPlace').classList.toggle('first', p === 1); } }
 const ORD = ['1st', '2nd', '3rd', '4th'];
 const racePlace = () => 1 + rivals.filter(r => r.s > P.s).length;
-function startRun() { WFX.t = -1; tilt.b0 = null; Object.keys(stats).forEach(k => stats[k] = 0); P = newPlayer(); P.v = RIDES[ride].base * 0.6;
+function startRun() { WFX.t = -1; lockOrientation(); tilt.b0 = null; Object.keys(stats).forEach(k => stats[k] = 0); P = newPlayer(); P.v = RIDES[ride].base * 0.6;
   C.items.forEach(it => { it.got = false; it.hit = false; if (it.m) { it.m.visible = true; it.fly = null; it.m.position.y = it.y; } });
   mode = 'intro'; SFX.unlock(); SFX.restartMusic(); $('garage').hidden = true; $('end').hidden = true; $('top').hidden = false; $('bot').hidden = true;
   SFX.primeVoice();
@@ -1279,7 +1295,7 @@ function renderCourses() { const el = $('courses'); el.innerHTML = '';
     b.innerHTML = `<i class="thumb"><img src="media/courses/trail-run-${c.id}.jpg" alt="">${locked ? '<em>🔒</em>' : ''}</i><b>${i + 1}. ${c.name}</b><span>${locked ? 'Locked · ' : ''}${c.sub}${c.board ? ' · Top 10' : ''}${best ? ' · best ' + best : ''}</span>`;
     b.addEventListener('click', () => { if (locked) { if (!el.querySelector('.unlock')) el.appendChild(SBUnlock.panel(() => { renderCourses(); flash('Bonus courses unlocked!', 1400); })); return; } setCourse(c.id); showRide(ride); if (!$('coursePop').hidden) { closePop(); needTilt(startRun); } }); el.appendChild(b); }); }
 COURSES.forEach(c => { const im = new Image(); im.src = `media/courses/trail-run-${c.id}.jpg`; });
-function openPop() { renderCourses(); renderWingPick(); $('coursePop').hidden = false; }
+function openPop() { unlockOrientation(); renderCourses(); renderWingPick(); $('coursePop').hidden = false; }
 function renderWingPick() { const el = $('wingPick'); let foundIt = false; try { foundIt = !!JSON.parse(localStorage.getItem('sb-moves-found') || '{}').wings; } catch (e) {}
   el.hidden = !(ride === 'board' && (foundIt || new URLSearchParams(location.search).get('wings'))); el.querySelectorAll('button').forEach(b => b.remove());
   Object.entries(WING_STYLES).forEach(([k, name]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = name; b.setAttribute('aria-pressed', k === wingStyle);

@@ -2,7 +2,7 @@
 .ridepick{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin:16px 0}
 .ridepick a{display:flex;flex-direction:column;text-decoration:none;color:#2a1d10;background:#fbf3e2;border:2px solid #c9b48c;border-radius:12px;overflow:hidden;box-shadow:0 3px 10px rgba(60,40,10,.15);transition:transform .15s}
 .ridepick a:hover{transform:translateY(-3px);border-color:#a8321e}
-.ridepick .pic{position:relative;aspect-ratio:16/9;background:#cdbb97}
+.ridepick .pic{position:relative;aspect-ratio:1/1;background:#cdbb97}
 .ridepick img{width:100%;height:100%;object-fit:cover;display:block}
 .ridepick b{font-family:var(--display),Georgia,serif;font-weight:400;font-size:20px;line-height:1.1;color:#a8321e;padding:8px 10px 0}
 .ridepick span{font-size:13px;line-height:1.3;padding:2px 10px 10px;color:#5a4a36}
@@ -259,11 +259,11 @@ footer .in{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
           <li>Paper builds for kids at home: the flapping brass bird, the getaway zipline, straw rockets and the whirlybird</li>
         </ul>
         <h3 style="font-family:var(--display);font-weight:400;font-size:26px;margin:18px 0 0">Pick your ride</h3><div class="ridepick" aria-label="Pick your ride">
-  <a href="skywing.html"><div class="pic"><img src="media/rides/wings.jpg" alt="Yvonne flying the wing suit over the canyon river" loading="lazy"><i class="tag">Fly</i></div><b>Wing Suit</b><span>Skywing River Run. Fly Yvonne's wings through the canyon.</span></a>
-  <a href="trail-run.html?ride=kart"><div class="pic"><img src="media/rides/kart.jpg" alt="The two-seat pedal kart on the dirt trail" loading="lazy"><i class="tag">Race</i></div><b>Pedal Kart</b><span>Trail Run. Finn and Toby race the dirt trail.</span></a>
-  <a href="trail-run.html?ride=board"><div class="pic"><img src="media/rides/board.jpg" alt="Yvonne on the fat-tire kiteboard" loading="lazy"><i class="tag">Race</i></div><b>Kiteboard</b><span>Trail Run. Yvonne rides the kite down the canyon.</span></a>
-  <a href="trail-run.html?ride=claw" class="clawcard"><div class="pic"><img src="media/rides/claw.jpg" alt="The Iron Claw, a winged kart with a kite" loading="lazy"><i class="tag gold">Secret ride</i></div><b>The Iron Claw</b><span>Earn 3 golden feathers to unlock it.</span></a>
-  <a href="workbench.html"><div class="pic"><img src="media/rides/build.jpg" alt="A homemade glider on the workbench" loading="lazy"><i class="tag">Build</i></div><b>Build Your Own</b><span>Invent a machine, then race it.</span></a>
+  <a href="skywing.html"><div class="pic"><img src="media/rides/sq-wings.jpg" alt="Yvonne flying the wing suit over the canyon river" loading="lazy"><i class="tag">Fly</i></div><b>Wing Suit</b><span>Skywing River Run. Fly Yvonne's wings through the canyon.</span></a>
+  <a href="trail-run.html?ride=kart"><div class="pic"><img src="media/rides/sq-kart.jpg" alt="The two-seat pedal kart on the dirt trail" loading="lazy"><i class="tag">Race</i></div><b>Pedal Kart</b><span>Trail Run. Finn and Toby race the dirt trail.</span></a>
+  <a href="trail-run.html?ride=board"><div class="pic"><img src="media/rides/sq-board.jpg" alt="Yvonne on the fat-tire kiteboard" loading="lazy"><i class="tag">Race</i></div><b>Kiteboard</b><span>Trail Run. Yvonne rides the kite down the canyon.</span></a>
+  <a href="trail-run.html?ride=claw" class="clawcard"><div class="pic"><img src="media/rides/sq-claw.jpg" alt="The Iron Claw, a winged kart with a kite" loading="lazy"><i class="tag gold">Secret ride</i></div><b>The Iron Claw</b><span>Earn 3 golden feathers to unlock it.</span></a>
+  <a href="workbench.html"><div class="pic"><img src="media/rides/sq-build.jpg" alt="A homemade glider on the workbench" loading="lazy"><i class="tag">Build</i></div><b>Build Your Own</b><span>Invent a machine, then race it.</span></a>
 </div>
 <script>(function(){var o=false;try{o=localStorage.getItem('sb-claw')==='1'||localStorage.getItem('sb-bonus-unlocked')==='1'}catch(e){}document.querySelectorAll('.clawcard').forEach(function(a){if(o){a.querySelector('.tag').textContent='Unlocked';a.querySelector('span').textContent='The best flyer in the game.'}else{a.classList.add('lock');a.querySelector('.tag').textContent='🔒 Locked'}})})();</script><div class="ctas"><a class="btn primary" href="flight-lab.html">Open the Flight Lab</a></div>
       </div>

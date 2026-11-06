@@ -1125,6 +1125,9 @@ window.addEventListener('deviceorientation', e => { if (!tilt.on || e.gamma == n
   if (tilt.b0 === null) tilt.b0 = fb; const dz = Math.abs(lr) < 3 ? 0 : lr - Math.sign(lr) * 3; tilt.x = clamp(dz / 18, -1, 1);
   const now = performance.now(), rate = tilt.pt ? (lr - tilt.plr) / Math.max(1, now - tilt.pt) * 1000 : 0; tilt.pt = now; tilt.plr = lr;
   if (rate < -260 && mode === 'run') kiteLoop();
+  // secret wings by phone: a sharp counter-clockwise twist, then a sharp clockwise twist within a second
+  if (rate < -300) tilt.ccwT = now;
+  else if (rate > 300 && tilt.ccwT && now - tilt.ccwT > 60 && now - tilt.ccwT < 1100) { tilt.ccwT = 0; if (mode === 'run' && ride === 'board') popWings(); }
   const d = fb - tilt.b0; tilt.y = Math.abs(d) < 6 ? 0 : clamp((d - Math.sign(d) * 6) / 12, -1, 1); });
 function tiltLabel() { $('hTilt').textContent = tilt.on ? 'Tilt: on' : 'Tilt: off'; $('gTilt').textContent = tilt.on ? 'Phone tilt: on' : 'Phone tilt: off';
   $('hTilt').setAttribute('aria-pressed', tilt.on); $('gTilt').setAttribute('aria-pressed', tilt.on); }
@@ -1227,7 +1230,7 @@ const MOVES = [
   { id: 'pipe', name: 'Pipe air', how: 'Canyon Run: ride up the red half-pipe and launch off the lip.', secret: true, hint: 'There is something fun on the left side of the canyon.' },
   { id: 'loop', name: 'Kite loop', how: 'At the bottom of the half-pipe, twist the phone counter-clockwise fast.', secret: true, hint: 'Try a sharp twist at the bottom of something curved.' },
   { id: 'kicker', name: 'Secret jump', how: 'Canyon Run: hit the hidden kickers by the canyon wall to fly up onto the grass.', secret: true, hint: 'Look for gold arrows near the canyon wall.' },
-  { id: 'wings', name: 'Secret wings', how: 'On the kiteboard, draw a circle counter-clockwise with your finger, then one clockwise. Wings shoot out of the board and every jump turns into a long glide. Tip back to rise, tip forward to come down.', secret: true, hint: 'Boards can fly too. Spin one way, then the other.' },
+  { id: 'wings', name: 'Secret wings', how: 'On the kiteboard, twist the phone sharply counter-clockwise, then clockwise (or draw those two circles with your finger). Wings shoot out of the board and every jump turns into a long glide. Tip back to rise, tip forward to come down.', secret: true, hint: 'Boards can fly too. Twist one way, then the other.' },
   { id: 'combo', name: 'Sky combo', how: 'Kite swoop, then a backflip, all in one jump.', secret: true, hint: 'Mix the kite with a flip before you land.' }
 ];
 function found(id) { if (SBMoves.discover(id)) setTimeout(() => flash('Secret move found!', 1400), 900); }
